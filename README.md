@@ -1,6 +1,7 @@
 # ⚡ Prompt Vault — Chrome Extension
+<img width="1400" height="560" alt="promo-tile-1400x560" src="https://github.com/user-attachments/assets/6e5d417b-0e5c-48e1-b8bc-86f4ea2a7b68" />
 
-Store, organize, AI-generate, and insert your AI prompts anywhere on the web — including capturing prompts from pages you're reading and pasting them into editors like Google Docs.
+Store, organize, AI-generate, and insert your AI prompts anywhere on the web. You can also use this as a text vault to copy, store, and paste multiple texts at once.
 
 **Version 0.0.1** · Manifest V3 · Works on any site
 
@@ -11,25 +12,10 @@ Store, organize, AI-generate, and insert your AI prompts anywhere on the web —
 - **Save & organize** prompts with titles, color-coded collections, auto-detected categories, pinning, and full-text search
 - **Capture from anywhere** — highlight text and save it in one click, right-click to save, or copy-to-save inside Google Docs / Word Online
 - **Insert anywhere** — a floating ⚡ button drops saved prompts straight into any text field (ChatGPT, Claude, Gmail, Notion, etc.)
-- **Paste anywhere** — copy any prompt to your clipboard and paste it into editors that don't accept direct insertion
 - **Variables** — `{{variable_name}}` placeholders you fill in at insert/copy time, with history suggestions
 - **AI prompt generator** — build high-quality, reusable prompts through a guided flow, using your own free Google Gemini key or an Anthropic Claude key
-- **Concise / Full** output styles and a **🧠 Deep-thinking** toggle
 - **Export** your whole library as JSON
 - **Local & private** — everything lives in your browser; no account
-
----
-
-## Installation (Developer Mode)
-
-1. Download and unzip this folder
-2. Open Chrome → `chrome://extensions/`
-3. Turn on **Developer mode** (top-right)
-4. Click **Load unpacked** and select the `prompt-vault` folder
-5. The ⚡ icon appears in your toolbar
-6. (Optional, for local PDFs/files) open the extension's details page and enable **Allow access to file URLs**
-
-To update: remove the old version first, then Load unpacked the new folder, and hard-reload any open pages (`Cmd/Ctrl+Shift+R`).
 
 ---
 
