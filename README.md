@@ -5,6 +5,13 @@ Store, organize, AI-generate, and insert your AI prompts anywhere on the web. Yo
 
 **Version 0.0.1** · Manifest V3 · Works on any site
 
+<img width="49%" alt="screenshot-1-library" src="https://github.com/user-attachments/assets/913243db-c030-4358-96f6-79bd850fff24" />
+<img width="49%" alt="screenshot-2-ai-generate" src="https://github.com/user-attachments/assets/1a7b5a5c-9173-45d4-936f-936590e154c9" />
+
+<img width="49%" alt="screenshot-3-insert" src="https://github.com/user-attachments/assets/8420750c-791d-44d7-a3bb-b909be46bbf6" />
+<img width="49%" alt="screenshot-4-capture" src="https://github.com/user-attachments/assets/5d1c4bb0-ac9f-4a46-ab87-5bbd5051d4a0" />
+
+
 ---
 
 ## Features at a glance
