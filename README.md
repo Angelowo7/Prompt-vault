@@ -31,8 +31,7 @@ Store, organize, AI-generate, and insert your AI prompts anywhere on the web. Yo
 Three ways to save text into your vault. All of them auto-generate a title, convert `[bracket placeholders]` into `{{variables}}`, and auto-categorize — instantly, with no API call.
 
 1. **Highlight → one click.** Select text on any normal web page and a small **⚡ Save to Vault** pill appears next to it. Click it.
-2. **Right-click.** Select text → right-click → **Save selection to Prompt Vault**.
-3. **Copy-to-save (Google Docs / Word Online / canvas editors).** These editors render text on a canvas, so highlighting is invisible to extensions. Instead, **select and copy** (`Ctrl/Cmd+C`) — the Save pill then appears so you can save the copied text.
+2. **Copy-to-save (Google Docs / Word Online / canvas editors).** These editors render text on a canvas, so highlighting is invisible to extensions. Instead, **select and copy** (`Ctrl/Cmd+C`) — the Save pill then appears so you can save the copied text.
 
 You can also save manually: open the popup → **+ New** → enter a title and prompt text.
 
@@ -47,12 +46,9 @@ You can also save manually: open the popup → **+ New** → enter a title and p
 4. The prompt is inserted at your cursor
 
 ### Paste anywhere (Google Docs, Word Online, restricted pages)
-Some editors don't accept programmatic insertion. In those cases Prompt Vault **copies the prompt to your clipboard** instead, and you paste it with **`Ctrl/Cmd+V`**. Two ways to copy:
+Some editors don't accept programmatic insertion. In those cases Prompt Vault **copies the prompt to your clipboard** instead, and you paste it with **`Ctrl/Cmd+V`**. To copy:
 
 - In the popup, click the **📋** button on any prompt (fills variables first, if any)
-- Or just trigger an insert as usual — if the page can't accept it, it automatically falls back to copying and tells you to paste
-
-This means you can take **any** prompt from your vault into Docs/Word, not just something you copied a moment ago.
 
 ---
 
@@ -63,7 +59,6 @@ Open the popup → **✨ Generate with AI**.
 1. **Choose a provider** (stored locally, switchable any time):
    - **Google Gemini** — free, no credit card. Get a key at https://aistudio.google.com/apikey
    - **Anthropic Claude** — paid API. Get a key at https://console.anthropic.com
-2. **(Gemini) Pick a model:** **Flash** for best quality, or **Flash-Lite** for ~4× more free daily usage.
 3. **Pick a category** (Writing / Coding / Creative / Planning / Data) and click through a few quick choices.
 4. **Describe the subject** — fill in the blank, tap an AI-suggested quick-pick chip, or add optional details.
 5. **Choose options:**
@@ -73,7 +68,7 @@ Open the popup → **✨ Generate with AI**.
 
 Generated prompts follow a built-in prompt-engineering standard: clear and unambiguous wording, a fitting role, concrete success criteria, `{{variables}}` for personal/changeable details, instructions to **search** for publicly knowable facts (rather than over-using variables), XML structure for complex tasks, and examples where useful.
 
-> **About "thinking mode":** prompt length does **not** turn on an AI's thinking/reasoning mode. That's controlled by the app's own thinking toggle / reasoning-model selection. The Deep-thinking option makes the generated prompt *encourage* step-by-step reasoning, which works best alongside the AI app's own thinking setting.
+> **About "thinking mode":** prompt length does **not** directly turn on an AI's thinking/reasoning mode. That's controlled by the app's own thinking toggle / reasoning-model selection. The Deep-thinking option makes the generated prompt *encourage* step-by-step reasoning, which works best alongside the AI app's own thinking setting.
 
 ---
 
@@ -89,28 +84,11 @@ When you insert or copy the prompt, you'll be asked to fill in each variable. Yo
 
 ---
 
-## Organizing
-
-- **Collections** — click **+ Collection** to create a color-coded group; **right-click** a collection chip to delete it
-- **Pin** — click 📌 on any card to keep favorites at the top
-- **Search** — type in the search bar to filter instantly
-- **Categories** — prompts are auto-tagged by topic as you save them
-- **Export** — click **↑** in the header to download your whole library (prompts, collections, variables, history) as JSON
-
----
-
 ## Privacy
 
 Everything is stored locally in your browser — no account, no server. Your API keys are stored locally and used only to call your chosen provider directly. Captured/copied text is only saved when you confirm it.
 
 Note: Google's **free** Gemini tier may use your prompts to improve their models (the paid tier does not). Avoid sending confidential text through the free tier.
-
----
-
-## Known limitations
-
-- **Inserting into Google Docs / Word Online isn't possible.** They don't use standard text fields and they reject simulated input events, which is a browser security rule no extension can bypass. Prompt Vault works there as a **capture** tool (save text out) and a **copy/paste** tool (copy a prompt, then `Ctrl/Cmd+V`).
-- **Chrome's built-in PDF viewer is sandboxed.** Extensions cannot inject any UI or read selections inside it, so the Save pill won't appear over Chrome-rendered PDFs.
 
 ---
 
@@ -121,12 +99,3 @@ Note: Google's **free** Gemini tier may use your prompts to improve their models
 - `contextMenus` — the right-click "Save selection" item
 - `clipboardRead` — capture copied text in Docs/Word and similar editors
 - `clipboardWrite` — copy prompts so you can paste them anywhere
-
----
-
-## Tips
-
-- The ⚡ button is **click-only** — it appears near your cursor when you enter a text field and opens the picker on a single click
-- In Google Docs/Word: **copy to save**, and **copy → paste** to use a prompt
-- Use **Flash-Lite** (Gemini) if you hit the free daily limit; it offers far more requests
-- Quick-pick chips and generated prompts use your free quota — the daily limit resets at midnight Pacific time
