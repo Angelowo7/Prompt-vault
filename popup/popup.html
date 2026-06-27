@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt Vault</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">Prompt Vault</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="exportBtn" title="Export library">↑</button>
+        <button class="btn-primary" id="newPromptBtn">+ New</button>
+      </div>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="Search prompts..." autocomplete="off" />
+      <button class="clear-search" id="clearSearch" style="display:none">✕</button>
+    </div>
+
+    <!-- Collections Row -->
+    <div class="collections-row">
+      <div class="collections-scroll" id="collectionsScroll">
+        <button class="collection-chip active" data-id="all">All</button>
+        <button class="collection-chip" data-id="pinned">📌 Pinned</button>
+        <!-- Dynamic collections inserted here -->
+        <button class="collection-chip add-collection" id="addCollectionBtn">+ Collection</button>
+      </div>
+    </div>
+
+    <!-- Prompts List -->
+    <div class="prompts-list" id="promptsList">
+      <div class="empty-state" id="emptyState" style="display:none">
+        <div class="empty-icon">✦</div>
+        <p class="empty-title">No prompts yet</p>
+        <p class="empty-sub">Click <strong>+ New</strong> to save your first prompt</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: New / Edit Prompt -->
+  <div class="modal-overlay" id="promptModal" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">New Prompt</h2>
+        <button class="icon-btn close-btn" id="closePromptModal">✕</button>
+      </div>
+
+      <!-- Mode Tabs -->
+      <div class="mode-tabs" id="modeTabs">
+        <button class="mode-tab active" data-mode="write">✍️ Write</button>
+        <button class="mode-tab" data-mode="ai">✨ Generate with AI</button>
+      </div>
+
+      <!-- WRITE MODE -->
+      <div class="modal-body" id="writeMode">
+        <label class="field-label">Title</label>
+        <input type="text" id="promptTitle" class="text-input" placeholder="e.g. Summarize article" />
+
+        <label class="field-label">
+          Prompt Text
+          <span class="field-hint">Use <code>{{variable}}</code> for fill-in fields</span>
+        </label>
+        <textarea id="promptText" class="text-area" placeholder="Write your prompt here... Use {{variable_name}} to add variables."></textarea>
+
+        <!-- Variable preview -->
+        <div id="variablePreview" style="display:none">
+          <label class="field-label">Detected Variables</label>
+          <div class="variable-chips" id="variableChips"></div>
+        </div>
+
+        <label class="field-label">Collection</label>
+        <select id="promptCollection" class="select-input">
+          <option value="">— None —</option>
+        </select>
+
+        <div class="auto-classify-row">
+          <span id="autoClassifyBadge" class="category-badge" style="display:none"></span>
+        </div>
+      </div>
+
+      <!-- AI MODE -->
+      <div class="modal-body ai-mode" id="aiMode" style="display:none">
+        <!-- Provider selector + API key notice (shown if no key) -->
+        <div id="aiKeyNotice" class="ai-key-notice" style="display:none">
+          <p class="ai-key-title">🔑 Connect an AI provider</p>
+
+          <div class="provider-select" id="providerSelect">
+            <button class="provider-btn active" data-provider="gemini">
+              <span class="provider-name">Google Gemini</span>
+              <span class="provider-tag free">Free</span>
+            </button>
+            <button class="provider-btn" data-provider="claude">
+              <span class="provider-name">Anthropic Claude</span>
+              <span class="provider-tag paid">Paid key</span>
+            </button>
+          </div>
+
+          <p class="ai-key-sub" id="providerSub">Paste your free Google Gemini API key. It's stored locally on your device only.</p>
+          <input type="password" id="apiKeyInput" class="text-input" placeholder="AIza..." autocomplete="off" />
+          <button class="btn-primary" id="saveApiKeyBtn" style="margin-top:8px;width:100%">Save Key & Continue</button>
+          <p class="ai-key-link" id="providerLink">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" class="link-like">aistudio.google.com/apikey</a> — no credit card needed</p>
+        </div>
+
+        <!-- Category picker (Screen 1) -->
+        <div id="aiCategoryScreen" style="display:none">
+          <div class="ai-provider-bar">
+            <span class="ai-provider-current" id="aiProviderCurrent2">⚡ Gemini</span>
+            <button class="ai-switch-provider" id="aiSwitchProvider2">Switch provider</button>
+          </div>
+          <div class="model-toggle" id="modelToggle" style="display:none">
+            <span class="model-toggle-label">Model:</span>
+            <button class="model-opt" data-model="gemini-2.5-flash">Flash <span class="model-hint">quality</span></button>
+            <button class="model-opt" data-model="gemini-2.5-flash-lite">Flash-Lite <span class="model-hint">4× free use</span></button>
+          </div>
+          <p class="ai-step-title">What kind of prompt do you want?</p>
+          <div class="cat-grid" id="catGrid"></div>
+        </div>
+
+        <!-- Step picker (Screen 2 — repeats per category step) -->
+        <div id="aiStepScreen" style="display:none">
+          <div class="ai-step-top">
+            <button class="ai-back" id="aiStepBack">←</button>
+            <span class="ai-progress" id="aiProgress"></span>
+            <span class="ai-context-chip" id="aiContextChip"></span>
+          </div>
+          <p class="ai-step-title" id="aiStepTitle">Pick one</p>
+          <div class="sub-list" id="aiStepOptions"></div>
+        </div>
+
+        <!-- Optional extra details (Screen 3) -->
+        <div id="aiDetailsScreen" style="display:none">
+          <div class="ai-step-top">
+            <button class="ai-back" id="aiDetailsBack">←</button>
+            <span class="ai-context-chip" id="aiContextChip2"></span>
+          </div>
+
+          <!-- Fill-in-the-blank sentence -->
+          <div class="fill-sentence" id="fillSentence"></div>
+
+          <!-- AI-generated quick-pick chips -->
+          <p class="chips-label">Quick picks <span class="optional-tag">tap to fill</span></p>
+          <div class="chips-row" id="chipsRow">
+            <div class="chips-loading" id="chipsLoading">
+              <div class="ai-dots"><span></span><span></span><span></span></div>
+              <span>Finding ideas…</span>
+            </div>
+          </div>
+
+          <!-- Optional extra details -->
+          <p class="field-label" style="margin-top:6px">More details <span class="optional-tag">optional</span></p>
+          <textarea id="aiExtraDetails" class="text-area" placeholder="Anything else to specify... (you can leave this blank)" style="min-height:70px"></textarea>
+
+          <!-- Generation options -->
+          <div class="gen-options">
+            <div class="gen-row">
+              <span class="gen-label">Prompt style</span>
+              <div class="gen-seg" id="complexityToggle">
+                <button class="gen-opt active" data-complexity="concise">Concise</button>
+                <button class="gen-opt" data-complexity="full">Full structure</button>
+              </div>
+            </div>
+            <label class="gen-row gen-switch">
+              <span class="gen-label">🧠 Deep thinking
+                <span class="gen-sub">make the AI reason step-by-step</span>
+              </span>
+              <input type="checkbox" id="deepThinkingToggle" />
+            </label>
+          </div>
+
+          <button class="btn-primary" id="aiGenerateBtn" style="width:100%;margin-top:12px">✨ Generate prompt</button>
+        </div>
+
+        <!-- Result (Screen 4 — loading + generated prompt) -->
+        <div id="aiResultScreen" style="display:none">
+          <!-- Loading -->
+          <div id="aiLoading" class="ai-loading" style="display:none">
+            <div class="ai-dots"><span></span><span></span><span></span></div>
+            <p class="ai-loading-text">Writing your prompt…</p>
+          </div>
+
+          <!-- Result -->
+          <div id="aiResult" style="display:none">
+            <div class="ai-step-top">
+              <span class="ai-context-chip" id="aiContextChip3"></span>
+            </div>
+            <label class="field-label">Generated Prompt</label>
+            <input type="text" id="aiResultTitle" class="text-input" placeholder="Prompt title" style="margin-bottom:8px" />
+            <textarea id="aiResultText" class="text-area" style="min-height:130px"></textarea>
+            <div class="ai-result-actions">
+              <button class="btn-ghost" id="aiRegenerateBtn">↻ Regenerate</button>
+              <button class="btn-primary" id="aiUseBtn">Use this prompt →</button>
+            </div>
+            <button class="ai-restart" id="aiRestartBtn">↺ Start over</button>
+          </div>
+
+          <!-- Error -->
+          <div id="aiError" class="ai-error" style="display:none">
+            <p id="aiErrorText"></p>
+            <button class="btn-ghost" id="aiErrorRetry" style="margin-top:8px">↻ Try again</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" id="writeFooter">
+        <button class="btn-ghost" id="cancelPromptModal">Cancel</button>
+        <button class="btn-primary" id="savePromptBtn">Save Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: New Collection -->
+  <div class="modal-overlay" id="collectionModal" style="display:none">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>New Collection</h2>
+        <button class="icon-btn close-btn" id="closeCollectionModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field-label">Name</label>
+        <input type="text" id="collectionName" class="text-input" placeholder="e.g. Coding, Writing, Work..." />
+        <label class="field-label">Color</label>
+        <div class="color-row" id="colorRow">
+          <button class="color-dot active" data-color="#6366f1" style="background:#6366f1"></button>
+          <button class="color-dot" data-color="#f59e0b" style="background:#f59e0b"></button>
+          <button class="color-dot" data-color="#10b981" style="background:#10b981"></button>
+          <button class="color-dot" data-color="#ef4444" style="background:#ef4444"></button>
+          <button class="color-dot" data-color="#3b82f6" style="background:#3b82f6"></button>
+          <button class="color-dot" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+          <button class="color-dot" data-color="#ec4899" style="background:#ec4899"></button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="cancelCollectionModal">Cancel</button>
+        <button class="btn-primary" id="saveCollectionBtn">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
